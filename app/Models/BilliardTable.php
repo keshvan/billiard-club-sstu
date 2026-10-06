@@ -11,7 +11,7 @@ class BilliardTable extends Model
         'hall_id',
         'game_type_id',
         'name',
-        'is_active'
+        'is_active',
     ];
 
     public function hall(): BelongsTo

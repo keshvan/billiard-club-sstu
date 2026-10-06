@@ -14,7 +14,7 @@ class Tariff extends Model
         'day_of_week',
         'start_time',
         'end_time',
-        'price_per_hour'
+        'price_per_hour',
     ];
 
     public function hall(): BelongsTo
