@@ -81,7 +81,7 @@ class HallIndex extends Component
             return;
         }
 
-        if ($hall->billiardTables()->exists() || $hall->tariffs()->exists()) {
+        if ($hall->billiardTables()->withTrashed()->exists() || $hall->tariffs()->exists()) {
             session()->flash('error', "Нельзя удалить зал «{$hall->name}»: к нему привязаны столы или тарифы");
         } else {
             $hall->delete();
