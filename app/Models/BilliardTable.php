@@ -4,9 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BilliardTable extends Model
 {
+    use SoftDeletes;
+
+    protected function casts(): array
+    {
+        return ['is_active' => 'boolean'];
+    }
+
     protected $fillable = [
         'hall_id',
         'game_type_id',
