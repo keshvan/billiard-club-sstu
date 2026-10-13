@@ -21,4 +21,6 @@
     </ul>
 
     <a href="{{ route('halls.index') }}" wire:navigate>К списку</a>
+    <a href="{{ route('billiard-tables.index', ['hall' => $hall->id]) }}" wire:navigate>Все столы зала</a>
+    <a href="{{ route('tariffs.index', ['hall' => $hall->id]) }}" wire:navigate>Все тарифы зала</a>
 </div>
