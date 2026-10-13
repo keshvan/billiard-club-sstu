@@ -9,7 +9,9 @@ use Livewire\Form;
 class HallForm extends Form
 {
     public ?Hall $hall = null;
+
     public string $name = '';
+
     public ?string $description = null;
 
     protected function rules(): array
@@ -42,12 +44,8 @@ class HallForm extends Form
 
     public function save(): void
     {
-        $this->validate();
-
-        $data = [
-            'name' => $this->name,
-            'description' => $this->description ?: null,
-        ];
+        $data = $this->validate();
+        $data['description'] = $data['description'] ?: null; // '' -> null
 
         if ($this->hall) {
             $this->hall->update($data);
