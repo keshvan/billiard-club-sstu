@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Enums\DayOfWeek;
 use App\Models\Tariff;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
@@ -31,7 +32,7 @@ class TariffForm extends Form
             'hall_id' => ['required', 'integer', 'exists:halls,id'],
             'game_type_id' => ['required', 'integer', 'exists:game_types,id'],
             'name' => ['required', 'string', 'max:255'],
-            'day_of_week' => ['nullable', 'integer', Rule::in(array_keys(Tariff::DAYS))],
+            'day_of_week' => ['nullable', 'integer', Rule::enum(DayOfWeek::class)],
             'start_time' => ['required', 'date_format:H:i'],
             'end_time' => ['required', 'date_format:H:i', 'different:start_time'],
             'price_per_hour' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
@@ -57,6 +58,7 @@ class TariffForm extends Form
         $this->hall_id = $tariff->hall_id;
         $this->game_type_id = $tariff->game_type_id;
         $this->name = $tariff->name;
+        $this->day_of_week = $tariff->day_of_week?->value;
         $this->start_time = substr($tariff->start_time, 0, 5);  // HH:MM:SS -> HH:MM
         $this->end_time = substr($tariff->end_time, 0, 5);
         $this->price_per_hour = (string) $tariff->price_per_hour;
@@ -65,7 +67,9 @@ class TariffForm extends Form
     public function save(): void
     {
         $data = $this->validate();
-        $data['day_of_week'] = $data['day_of_week'] ?: null; // '' -> null
+        $data['day_of_week'] = filled($data['day_of_week'])
+            ? DayOfWeek::from((int) $data['day_of_week'])
+            : null; // '' -> null
 
         if ($this->tariff) {
             $this->tariff->update($data);
