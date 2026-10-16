@@ -38,7 +38,7 @@
                     <td><a href="{{ route('tariffs.show', $tariff) }}" wire:navigate>{{ $tariff->name }}</a></td>
                     <td><a href="{{ route('halls.show', $tariff->hall) }}" wire:navigate>{{ $tariff->hall->name }}</a></td>
                     <td>{{ $tariff->gameType->name }}</td>
-                    <td>{{ \App\Models\Tariff::DAYS[$tariff->day_of_week] ?? 'Каждый день' }}</td>
+                    <td>{{ $tariff->day_of_week?->label() ?? 'Каждый день' }}</td>
                     <td>{{ substr($tariff->start_time, 0, 5) }}–{{ substr($tariff->end_time, 0, 5) }}</td>
                     <td>{{ number_format($tariff->price_per_hour, 2, ',', ' ') }}</td>
                     <td>
@@ -92,8 +92,8 @@
                         <label for="day_of_week">День недели</label><br>
                         <select id="day_of_week" wire:model="form.day_of_week">
                             <option value="">Каждый день</option>
-                            @foreach (\App\Models\Tariff::DAYS as $num => $label)
-                                <option value="{{ $num }}">{{ $label }}</option>
+                            @foreach (\App\Enums\DayOfWeek::options() as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('form.day_of_week') <div style="color: red;">{{ $message }}</div> @enderror

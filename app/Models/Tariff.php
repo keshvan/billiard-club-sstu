@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DayOfWeek;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,15 +18,12 @@ class Tariff extends Model
         'price_per_hour',
     ];
 
-    public const DAYS = [
-        1 => 'Понедельник',
-        2 => 'Вторник',
-        3 => 'Среда',
-        4 => 'Четверг',
-        5 => 'Пятница',
-        6 => 'Суббота',
-        7 => 'Воскресенье',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'day_of_week' => DayOfWeek::class,
+        ];
+    }
 
     public function hall(): BelongsTo
     {
