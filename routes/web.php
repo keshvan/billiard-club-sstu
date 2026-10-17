@@ -1,18 +1,19 @@
 <?php
-
-use App\Livewire\BilliardTables\BilliardTableIndex;
-use App\Livewire\BilliardTables\BilliardTableShow;
-use App\Livewire\Halls\HallIndex;
-use App\Livewire\Halls\HallShow;
-use App\Livewire\Tariffs\TariffIndex;
-use App\Livewire\Tariffs\TariffShow;
+use App\Livewire\Booking\BookingForm;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/halls', HallIndex::class)->name('halls.index');
-Route::get('/halls/{hall}', HallShow::class)->name('halls.show');
+Route::view('/', 'welcome');
 
-Route::get('/billiard-tables', BilliardTableIndex::class)->name('billiard-tables.index');
-Route::get('/billiard-tables/{billiardTable}', BilliardTableShow::class)->name('billiard-tables.show');
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-Route::get('/tariffs', TariffIndex::class)->name('tariffs.index');
-Route::get('/tariffs/{tariff}', TariffShow::class)->name('tariffs.show');
+Route::view('profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
+Route::get('book', BookingForm::class)
+    ->middleware('auth')
+    ->name('booking.form');
+
+require __DIR__.'/auth.php';
