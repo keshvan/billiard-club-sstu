@@ -8,6 +8,7 @@ use Livewire\Component;
 use App\Models\Hall;
 use App\Models\Booking;
 use App\Models\Tariff;
+use Illuminate\Support\Facades\Auth;
 
 class BookingForm extends Component
 {
@@ -17,7 +18,7 @@ class BookingForm extends Component
     public string $bookingDate = '';
     public string $startTime = '';
     public int $durationHours = 1;
-    
+
     public ?int $tariffId = null;
     public float $totalPrice = 0;
 
@@ -28,8 +29,8 @@ class BookingForm extends Component
     protected function rules(): array {
         return [
             'hallId' => 'required|exists:halls,id',
-            'tableId' => 'required|exists"billiard_tables,id',
-            'bookingDate' => 'required|exists:billiard_tables,id',
+            'tableId' => 'required|exists:billiard_tables,id',
+            'bookingDate' => 'required|date|after_or_equal:today',
             'startTime' => 'required|date_format:H:i',
             'durationHours' => 'required|integer|min:1|max:8',
         ];
@@ -62,7 +63,7 @@ class BookingForm extends Component
         $endDateTime = $startDateTime->copy()->addHours($this -> durationHours);
         $tariffs = Tariff::query()
             ->where("hall_id", $table -> hall_id)
-            ->where("game_type_id", $this -> bookingDate)
+            ->where("game_type_id", $table->game_type_id)
             ->get();
         foreach ($tariffs as $tariff) {
             if (!is_null($this -> tariffId)) {
@@ -73,7 +74,7 @@ class BookingForm extends Component
             $tariffStart = Carbon::parse("{$this->bookingDate}{$tariff->start_time}");
             $tariffEnd = Carbon::parse("{$this->bookingDate}{$tariff->end_time}");
             if ($startDateTime->gte($tariffStart) && $endDateTime->lte($tariffEnd)) {
-                $this -> tariffId = $tariffStart->id;
+                $this -> tariffId = $tariff->id;
                 $this -> totalPrice = (float) $tariff->price_per_hour * $this->durationHours;
                 break;
             }
