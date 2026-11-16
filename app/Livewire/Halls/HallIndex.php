@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Halls;
 
+use App\Livewire\Concerns\AuthorizesAdmin;
 use App\Livewire\Forms\HallForm;
 use App\Models\Hall;
 use Livewire\Component;
@@ -10,6 +11,7 @@ use Livewire\Attributes\Computed;
 
 class HallIndex extends Component
 {
+    use AuthorizesAdmin;
     use WithPagination;
 
     public HallForm $form;
@@ -27,6 +29,7 @@ class HallIndex extends Component
 
     public function create(): void
     {
+        $this->authorizeAdmin();
         $this->form->reset();
         $this->form->resetValidation();
         $this->showModal = true;
@@ -34,6 +37,7 @@ class HallIndex extends Component
 
     public function edit(Hall $hall): void
     {
+        $this->authorizeAdmin();
         $this->form->resetValidation();
         $this->form->setHall($hall);
         $this->showModal = true;
@@ -41,6 +45,7 @@ class HallIndex extends Component
 
     public function save(): void
     {
+        $this->authorizeAdmin();
         $isNew = ! $this->form->hall;
 
         $this->form->save();
@@ -64,6 +69,7 @@ class HallIndex extends Component
 
     public function confirmDelete(int $id): void
     {
+        $this->authorizeAdmin();
         $this->deletingId = $id;
     }
 
@@ -74,6 +80,7 @@ class HallIndex extends Component
 
     public function delete(): void
     {
+        $this->authorizeAdmin();
         $hall = $this->deletingHall;
 
         if (! $hall) {

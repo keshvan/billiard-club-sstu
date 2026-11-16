@@ -1,16 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-800">Личный кабинет</p>
+                <h1 class="mt-2 text-2xl font-semibold">Рады видеть вас, {{ auth()->user()->name }}</h1>
+            </div>
+            <a href="{{ route('booking.form') }}" wire:navigate class="ui-button-primary">Забронировать стол</a>
+        </div>
     </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
+    <div class="page-shell pt-6">
+        <div class="surface-pad">
+            <h2 class="text-lg font-semibold">Начните с выбора зала</h2>
+            <p class="mt-2 text-sm text-slate-500">Посмотрите доступные залы, столы и тарифы клуба.</p>
+            <div class="mt-5 flex flex-wrap gap-3">
+                <a href="{{ route('halls.index') }}" wire:navigate class="ui-button-secondary">Залы</a>
+                <a href="{{ route('billiard-tables.index') }}" wire:navigate class="ui-button-secondary">Столы</a>
+                <a href="{{ route('tariffs.index') }}" wire:navigate class="ui-button-secondary">Тарифы</a>
             </div>
         </div>
     </div>

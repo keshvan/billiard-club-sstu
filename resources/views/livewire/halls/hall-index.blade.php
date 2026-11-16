@@ -1,96 +1,87 @@
-<div class="py-6">
-    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <h1 class="mb-4 text-2xl font-bold">Залы</h1>
+<div class="page-shell">
+    <div class="mb-7 flex flex-wrap items-end justify-between gap-4">
+        <div>
+            <p class="catalog-kicker">Пространство клуба</p>
+            <h1 class="page-title mt-2">Залы</h1>
+            <p class="page-description">Выберите зал, который подойдёт для вашей игры и компании.</p>
+        </div>
+        @if (auth()->user()?->isAdmin())
+            <button wire:click="create" class="ui-button-primary">Добавить зал</button>
+        @endif
+    </div>
 
         @if (session('success'))
-            <div class="mb-4 text-green-600">{{ session('success') }}</div>
+            <div class="ui-alert-success mb-4">{{ session('success') }}</div>
         @endif
         @if (session('error'))
-            <div class="mb-4 text-red-600">{{ session('error') }}</div>
+            <div class="ui-alert-error mb-4">{{ session('error') }}</div>
         @endif
 
-        <div class="mb-4 flex flex-wrap gap-2">
+        <div class="mb-6">
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="Поиск по названию"
-                   class="rounded border border-gray-400 px-2 py-1">
-            <button wire:click="create" class="rounded border border-gray-400 bg-gray-100 px-3 py-1 hover:bg-gray-200">
-                Добавить зал
-            </button>
+                   class="ui-input w-full sm:max-w-sm">
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full border-collapse border border-gray-400">
-                <thead>
-                    <tr class="bg-gray-100 text-left">
-                        <th class="border border-gray-400 p-1.5">ID</th>
-                        <th class="border border-gray-400 p-1.5">Название</th>
-                        <th class="border border-gray-400 p-1.5">Описание</th>
-                        <th class="border border-gray-400 p-1.5">Столов</th>
-                        <th class="border border-gray-400 p-1.5">Тарифов</th>
-                        <th class="border border-gray-400 p-1.5">Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($halls as $hall)
-                        <tr wire:key="hall-{{ $hall->id }}">
-                            <td class="border border-gray-400 p-1.5">{{ $hall->id }}</td>
-                            <td class="border border-gray-400 p-1.5">
-                                <a href="{{ route('halls.show', $hall) }}" wire:navigate
-                                   class="text-blue-600 underline hover:text-blue-800">{{ $hall->name }}</a>
-                            </td>
-                            <td class="border border-gray-400 p-1.5">{{ \Illuminate\Support\Str::limit($hall->description, 60) }}</td>
-                            <td class="border border-gray-400 p-1.5">{{ $hall->billiard_tables_count }}</td>
-                            <td class="border border-gray-400 p-1.5">{{ $hall->tariffs_count }}</td>
-                            <td class="space-x-1 border border-gray-400 p-1.5">
-                                <button wire:click="edit({{ $hall->id }})"
-                                        class="rounded border border-gray-400 bg-gray-100 px-2 py-0.5 hover:bg-gray-200">Изменить</button>
-                                <button wire:click="confirmDelete({{ $hall->id }})"
-                                        class="rounded border border-gray-400 bg-gray-100 px-2 py-0.5 hover:bg-gray-200">Удалить</button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="6" class="border border-gray-400 p-1.5">Залов пока нет</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <div class="catalog-grid">
+            @forelse ($halls as $hall)
+                <article wire:key="hall-{{ $hall->id }}" class="catalog-card">
+                    <p class="catalog-kicker">Зал клуба</p>
+                    <h2 class="catalog-title"><a href="{{ route('halls.show', $hall) }}" wire:navigate class="hover:text-[#176B4D]">{{ $hall->name }}</a></h2>
+                    <p class="catalog-copy">{{ $hall->description ?: 'Уютное пространство для игры и отдыха.' }}</p>
+                    <div class="catalog-meta">
+                        <span>Столы: {{ $hall->billiard_tables_count }}</span>
+                        <span>Тарифы: {{ $hall->tariffs_count }}</span>
+                    </div>
+                    <div class="mt-auto flex items-center justify-between pt-5">
+                        <a href="{{ route('halls.show', $hall) }}" wire:navigate class="ui-link text-sm">Подробнее <span aria-hidden="true">→</span></a>
+                        @if (auth()->user()?->isAdmin())
+                            <div class="flex gap-3 text-xs text-[#78827A]">
+                                <button wire:click="edit({{ $hall->id }})" class="hover:text-[#176B4D]">Изменить</button>
+                                <button wire:click="confirmDelete({{ $hall->id }})" class="hover:text-[#A33F3F]">Удалить</button>
+                            </div>
+                        @endif
+                    </div>
+                </article>
+            @empty
+                <div class="surface-pad col-span-full text-sm text-[#78827A]">Залов пока нет</div>
+            @endforelse
         </div>
 
         <div class="mt-4">{{ $halls->links() }}</div>
 
-        @if ($showModal)
+        @if (auth()->user()?->isAdmin() && $showModal)
             <x-ui.modal :title="$form->hall ? 'Редактирование зала' : 'Новый зал'" close="closeModal">
                 <form wire:submit="save">
                     <div class="mb-4">
-                        <label for="name">Название</label><br>
-                        <input type="text" id="name" wire:model="form.name" class="rounded border border-gray-400 px-2 py-1">
-                        @error('form.name') <div class="text-red-600">{{ $message }}</div> @enderror
+                        <label for="name" class="ui-label">Название</label>
+                        <input type="text" id="name" wire:model="form.name" class="ui-input w-full">
+                        @error('form.name') <div class="text-sm text-[#A33F3F]">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-4">
-                        <label for="description">Описание</label><br>
-                        <textarea id="description" rows="5" wire:model="form.description"
-                                  class="w-full rounded border border-gray-400 px-2 py-1"></textarea>
-                        @error('form.description') <div class="text-red-600">{{ $message }}</div> @enderror
+                        <label for="description" class="ui-label">Описание</label>
+                        <textarea id="description" rows="5" wire:model="form.description" class="ui-input w-full"></textarea>
+                        @error('form.description') <div class="text-sm text-[#A33F3F]">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="space-x-1">
-                        <button type="submit" class="rounded border border-gray-400 bg-gray-100 px-3 py-1 hover:bg-gray-200">Сохранить</button>
-                        <button type="button" wire:click="closeModal" class="rounded border border-gray-400 bg-gray-100 px-3 py-1 hover:bg-gray-200">Отмена</button>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="submit" class="ui-button-primary">Сохранить</button>
+                        <button type="button" wire:click="closeModal" class="ui-button-secondary">Отмена</button>
                     </div>
                 </form>
             </x-ui.modal>
         @endif
 
-        @if ($this->deletingHall)
+        @if (auth()->user()?->isAdmin() && $this->deletingHall)
             <x-ui.modal close="cancelDelete" max-width="sm">
                 <p class="mb-4">
                     Удалить зал
                     <strong>#{{ $this->deletingHall->id }} «{{ $this->deletingHall->name }}»</strong>?
                 </p>
-                <div class="space-x-1">
-                    <button wire:click="delete" class="rounded border border-gray-400 bg-gray-100 px-3 py-1 hover:bg-gray-200">Да, удалить</button>
-                    <button wire:click="cancelDelete" class="rounded border border-gray-400 bg-gray-100 px-3 py-1 hover:bg-gray-200">Отмена</button>
+                <div class="flex flex-wrap gap-2">
+                    <button wire:click="delete" class="ui-button-danger">Да, удалить</button>
+                    <button wire:click="cancelDelete" class="ui-button-secondary">Отмена</button>
                 </div>
             </x-ui.modal>
         @endif
-    </div>
 </div>

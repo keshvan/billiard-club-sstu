@@ -2,6 +2,7 @@
 
 namespace App\Livewire\BilliardTables;
 
+use App\Livewire\Concerns\AuthorizesAdmin;
 use App\Livewire\Forms\BilliardTableForm;
 use App\Models\BilliardTable;
 use App\Models\GameType;
@@ -14,6 +15,7 @@ use Livewire\WithPagination;
 
 class BilliardTableIndex extends Component
 {
+    use AuthorizesAdmin;
     use WithPagination;
 
     public BilliardTableForm $form;
@@ -57,6 +59,7 @@ class BilliardTableIndex extends Component
 
     public function create(): void
     {
+        $this->authorizeAdmin();
         $this->form->reset();
         $this->form->resetValidation();
         $this->form->hall_id = $this->hall !== '' ? (int) $this->hall : null;
@@ -65,6 +68,7 @@ class BilliardTableIndex extends Component
 
     public function edit(BilliardTable $billiardTable): void
     {
+        $this->authorizeAdmin();
         $this->form->resetValidation();
         $this->form->setBilliardTable($billiardTable);
         $this->showModal = true;
@@ -72,6 +76,7 @@ class BilliardTableIndex extends Component
 
     public function save(): void
     {
+        $this->authorizeAdmin();
         $isNew = ! $this->form->billiardTable;
 
         $this->form->save();
@@ -89,6 +94,7 @@ class BilliardTableIndex extends Component
 
     public function confirmDelete(int $id): void
     {
+        $this->authorizeAdmin();
         $this->deletingId = $id;
     }
 
@@ -99,6 +105,7 @@ class BilliardTableIndex extends Component
 
     public function delete(): void
     {
+        $this->authorizeAdmin();
         $table = $this->deletingTable;
 
         if ($table) {

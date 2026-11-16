@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Enums\DayOfWeek;
+use App\Livewire\Concerns\AuthorizesAdmin;
 use App\Models\Tariff;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
@@ -10,6 +11,8 @@ use Livewire\Form;
 
 class TariffForm extends Form
 {
+    use AuthorizesAdmin;
+
     public ?Tariff $tariff = null;
 
     public int|string|null $hall_id = null;
@@ -66,6 +69,7 @@ class TariffForm extends Form
 
     public function save(): void
     {
+        $this->authorizeAdmin();
         $data = $this->validate();
         $data['day_of_week'] = filled($data['day_of_week'])
             ? DayOfWeek::from((int) $data['day_of_week'])

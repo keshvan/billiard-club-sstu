@@ -34,6 +34,10 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
+    <div class="mb-6">
+        <p class="catalog-kicker">Безопасность аккаунта</p>
+        <h1 class="mt-2 text-2xl font-semibold text-[#17211B]">Подтвердите пароль</h1>
+    </div>
     <div class="mb-4 text-sm text-gray-600">
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
     </div>
