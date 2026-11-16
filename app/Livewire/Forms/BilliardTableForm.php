@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Concerns\AuthorizesAdmin;
 use App\Models\BilliardTable;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class BilliardTableForm extends Form
 {
+    use AuthorizesAdmin;
+
     public ?BilliardTable $billiardTable = null;
 
     public int|string|null $hall_id = null;
@@ -57,6 +60,7 @@ class BilliardTableForm extends Form
 
     public function save(): void
     {
+        $this->authorizeAdmin();
         $data = $this->validate();
 
         if ($this->billiardTable) {

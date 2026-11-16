@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Concerns\AuthorizesAdmin;
 use App\Models\Hall;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class HallForm extends Form
 {
+    use AuthorizesAdmin;
+
     public ?Hall $hall = null;
 
     public string $name = '';
@@ -44,6 +47,7 @@ class HallForm extends Form
 
     public function save(): void
     {
+        $this->authorizeAdmin();
         $data = $this->validate();
         $data['description'] = $data['description'] ?: null; // '' -> null
 

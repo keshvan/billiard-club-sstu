@@ -18,7 +18,7 @@
     wire:click.self="{{ $close }}"
     wire:keydown.escape.window="{{ $close }}"
 >
-    <div {{ $attributes->class(['w-full rounded bg-white p-6 shadow', $maxWidthClass]) }}>
+    <div {{ $attributes->class(['surface modal-surface w-full p-6 shadow-xl shadow-slate-900/10', $maxWidthClass]) }}>
         @if ($title)
             <h2 class="mb-4 text-xl font-semibold">{{ $title }}</h2>
         @endif
