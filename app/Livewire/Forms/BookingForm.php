@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Booking;
+namespace App\Livewire\Forms;
 
 use App\Models\BilliardTable;
 use Illuminate\Support\Carbon;
@@ -96,7 +96,6 @@ class BookingForm extends Component
             ->get();
 
         foreach ($tariffs as $tariff) {
-            // For a booking after midnight, an overnight tariff may have started the previous day.
             foreach ([$startDateTime->copy(), $startDateTime->copy()->subDay()] as $dateCandidate) {
                 $candidateStart = $dateCandidate->copy()->setTimeFromTimeString($tariff->start_time);
                 $candidateEnd = $dateCandidate->copy()->setTimeFromTimeString($tariff->end_time);
@@ -169,7 +168,7 @@ class BookingForm extends Component
     }
     public function render()
     {
-        return view('livewire.booking.booking-form', [
+        return view('livewire.bookings.booking-form', [
             'halls' => Hall::orderBy('name')->get(),
             'tables' => $this->hallId ? BilliardTable::where('hall_id', $this->hallId)
             ->where('is_active', true)
