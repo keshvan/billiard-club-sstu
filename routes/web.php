@@ -2,7 +2,9 @@
 
 use App\Livewire\BilliardTables\BilliardTableIndex;
 use App\Livewire\BilliardTables\BilliardTableShow;
-use App\Livewire\Booking\BookingForm;
+use App\Livewire\Bookings\BookingIndex;
+use App\Livewire\Bookings\MyBookings;
+use App\Livewire\Forms\BookingForm;
 use App\Livewire\Halls\HallIndex;
 use App\Livewire\Halls\HallShow;
 use App\Livewire\Tariffs\TariffIndex;
@@ -22,6 +24,10 @@ Route::view('profile', 'profile')
 Route::get('book', BookingForm::class)
     ->middleware('auth')
     ->name('booking.form');
+
+Route::get('/my-bookings', MyBookings::class)->middleware('auth')->name('my-bookings.index');
+
+Route::get('/bookings', BookingIndex::class)->middleware('auth', 'admin')->name('bookings.index');
 
 Route::get('/halls', HallIndex::class)->name('halls.index');
 Route::get('/halls/{hall}', HallShow::class)->name('halls.show');

@@ -37,6 +37,7 @@ new class extends Component
                         </button>
                     </x-slot>
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('my-bookings.index')" wire:navigate>Мои бронирования</x-dropdown-link>
                         <x-dropdown-link :href="route('profile')" wire:navigate>Профиль</x-dropdown-link>
                         <button wire:click="logout" class="w-full text-start"><x-dropdown-link>Выйти</x-dropdown-link></button>
                     </x-slot>
@@ -59,6 +60,7 @@ new class extends Component
             <a href="{{ route('tariffs.index') }}" wire:navigate class="text-slate-700">Тарифы</a>
             @auth
                 <a href="{{ route('booking.form') }}" wire:navigate class="ui-button-primary mt-1">Забронировать</a>
+                <a href="{{ route('my-bookings.index') }}" wire:navigate class="text-slate-700">Мои бронирования</a>
                 <a href="{{ route('profile') }}" wire:navigate class="text-slate-700">Профиль · {{ auth()->user()->name }}</a>
                 <button wire:click="logout" class="text-left text-slate-600">Выйти</button>
             @else
